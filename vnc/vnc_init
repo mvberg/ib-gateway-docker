@@ -1,0 +1,26 @@
+#!/bin/bash -e
+
+VNC=/usr/bin/x11vnc
+VNCARGS="-forever -rfbport 5900 -rfbauth /.vnc/passwd \
+  -o /.vnc/x11vnc.log -display $DISPLAY"
+PIDFILE=/var/vnc.pid
+case "$1" in
+  start)
+    echo -n "Starting x11vnc"
+    /sbin/start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $VNC -- $VNCARGS
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping x11vnc"
+    /sbin/start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    echo "."
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  *)
+  echo "Usage: /etc/init.d/xvfb {start|stop|restart}"
+  exit 1
+esac
+exit 0

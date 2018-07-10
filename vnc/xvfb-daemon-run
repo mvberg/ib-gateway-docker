@@ -1,0 +1,18 @@
+#!/bin/bash
+/etc/init.d/xvfb start
+sleep 1
+
+# start VNC if password exists
+if [ "$VNC_PASSWORD" ]; then
+  mkdir /.vnc
+  x11vnc -storepasswd "$VNC_PASSWORD" /.vnc/passwd > /dev/null
+  /etc/init.d/vnc start
+fi
+
+$@
+exit_value=$?
+
+[ "$VNC_PASSWORD" ] && /etc/init.d/vnc stop
+/etc/init.d/xvfb stop
+
+exit $exit_value

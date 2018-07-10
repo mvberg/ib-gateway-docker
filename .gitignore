@@ -1,0 +1,13 @@
+.project
+.classpath
+.settings/
+.groovy/
+.idea/
+
+bin/
+target/
+
+*.pyc
+
+node_modules/
+
