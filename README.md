@@ -40,6 +40,12 @@ See [docker-compose.yml](docker-compose.yml) for configuring VNC password, accou
 
 Please do not open your box to the internet.
 
+### Testing VNC
+
+* localhost:5901
+
+![vnc](docs/ib_gateway_vnc.jpg)
+
 ### Troubleshooting
 
 Sometimes, when running in non-daemon mode, you will see this:
