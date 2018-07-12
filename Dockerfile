@@ -15,8 +15,8 @@ RUN  apt-get update \
 # Setup IB TWS
 RUN mkdir -p /opt/TWS
 WORKDIR /opt/TWS
-RUN wget -q http://one-algo.s3.amazonaws.com/ibgateway-latest-standalone-linux-x64-v960.2a.sh
-RUN chmod a+x ibgateway-latest-standalone-linux-x64-v960.2a.sh
+RUN wget -q http://one-algo.s3.amazonaws.com/ibgateway-latest-standalone-linux-x64-v972.1k.sh
+RUN chmod a+x ibgateway-latest-standalone-linux-x64-v972.1k.sh
 
 # Setup  IBController
 RUN mkdir -p /opt/IBController/
@@ -37,7 +37,7 @@ RUN \
 WORKDIR /
 
 # Install TWS
-RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v960.2a.sh
+RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v972.1k.sh
 
 #CMD yes
 

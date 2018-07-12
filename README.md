@@ -2,6 +2,9 @@
 
 IB Gateway running in Docker with IB Controller and VNC
 
+TWS Gateway: v972.1k
+IB Controller: v3.2.0
+
 ### Getting Started
 
 ```bash
@@ -10,6 +13,8 @@ IB Gateway running in Docker with IB Controller and VNC
 > docker build .
 > docker-compose up
 ```
+
+#### Expected output
 
 ```bash
 Creating ibgatewaydocker_tws_1 ...
