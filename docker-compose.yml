@@ -19,7 +19,7 @@ services:
       - TWS_CONFIG_PATH=/root/Jts
       - LOG_PATH=/opt/IBController/Logs
       - TRADING_MODE=paper # either paper or live
-      - TWSUSERID=edemo # IB account
+      - TWSUSERID=fdemo # IB account
       - TWSPASSWORD=demouser # IB account password
       - FIXUSERID=
       - FIXPASSWORD=
