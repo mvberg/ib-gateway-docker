@@ -9,6 +9,8 @@ target/
 
 *.pyc
 
+Logs/*
+
 node_modules/
 
 *.local
