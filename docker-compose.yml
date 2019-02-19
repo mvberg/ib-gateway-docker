@@ -12,7 +12,7 @@ services:
       - TZ=America/Chicago
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=972
+      - TWS_MAJOR_VRSN=974
       - IBC_INI=/root/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
