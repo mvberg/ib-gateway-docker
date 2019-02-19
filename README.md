@@ -2,8 +2,8 @@
 
 IB Gateway running in Docker with IB Controller and VNC
 
-TWS Gateway: v974.4g
-IB Controller: v3.2.0
+* TWS Gateway: v974.4g
+* IB Controller: v3.2.0
 
 ### Getting Started
 
