@@ -5,6 +5,10 @@ IB Gateway running in Docker with [IB Controller](https://github.com/ib-controll
 * TWS Gateway: v974.4g
 * IB Controller: v3.2.0
 
+### Docker Hub image
+
+* https://hub.docker.com/r/mvberg/ib-gateway-docker
+
 ### Getting Started
 
 ```bash
