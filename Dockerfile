@@ -21,7 +21,7 @@ RUN wget -q http://cdn.quantconnect.com/interactive/ibgateway-latest-standalone-
 RUN chmod a+x ibgateway-latest-standalone-linux-x64-v974.4g.sh
 
 # Setup  IBController
-RUN mkdir -p /opt/IBController/ && mkdir -p /root/IBController/Logs
+RUN mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
 WORKDIR /opt/IBController/
 RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
 RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
