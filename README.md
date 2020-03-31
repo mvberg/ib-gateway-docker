@@ -1,9 +1,13 @@
 # Interactive Brokers Gateway Docker
 
-IB Gateway running in Docker with IB Controller and VNC
+IB Gateway running in Docker with [IB Controller](https://github.com/ib-controller/ib-controller/) and VNC
 
 * TWS Gateway: v974.4g
 * IB Controller: v3.2.0
+
+### Docker Hub image
+
+* https://hub.docker.com/r/mvberg/ib-gateway-docker
 
 ### Getting Started
 
@@ -50,6 +54,14 @@ Please do not open your box to the internet.
 * localhost:5901
 
 ![vnc](docs/ib_gateway_vnc.jpg)
+
+### Demo Accounts
+
+It seems that all of the `demo` accounts are dead for good:
+
+* edemo
+* fdemo
+* pmdemo
 
 ### Troubleshooting
 

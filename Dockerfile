@@ -1,5 +1,6 @@
 FROM ubuntu:16.04
-MAINTAINER Mike Ehrenberg <mvberg@gmail.com>
+
+LABEL maintainer="Mike Ehrenberg <mvberg@gmail.com>"
 
 RUN  apt-get update \
   && apt-get install -y wget \
@@ -10,7 +11,8 @@ RUN  apt-get update \
   && apt-get install -y libxi6 \
 	&& apt-get install -y x11vnc \
   && apt-get install -y socat \
-  && apt-get install -y software-properties-common
+  && apt-get install -y software-properties-common \
+  && apt-get install -y dos2unix
 
 # Setup IB TWS
 RUN mkdir -p /opt/TWS
@@ -25,26 +27,10 @@ RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.
 RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
 RUN chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
 
-# Install Java 8 TODO maybe just use "from:java8"
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  apt-get install -y dos2unix && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
-
 WORKDIR /
 
 # Install TWS
 RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v974.4g.sh
-
-#CMD yes
-
-# Launch a virtual screen (this seems to be broken)
-#RUN Xvfb :1 -screen 0 1024x768x24 2>&1 >/dev/null &
-#RUN export DISPLAY=:1
 
 ENV DISPLAY :0
 
