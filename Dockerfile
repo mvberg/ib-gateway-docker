@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 LABEL maintainer="Mike Ehrenberg <mvberg@gmail.com>"
 
@@ -9,7 +9,7 @@ RUN  apt-get update \
   && apt-get install -y libxtst6 \
   && apt-get install -y libxrender1 \
   && apt-get install -y libxi6 \
-	&& apt-get install -y x11vnc \
+  && apt-get install -y x11vnc \
   && apt-get install -y socat \
   && apt-get install -y software-properties-common \
   && apt-get install -y dos2unix
