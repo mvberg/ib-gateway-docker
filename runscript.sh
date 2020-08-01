@@ -1,5 +1,6 @@
 #!/bin/bash
 
+socat TCP-LISTEN:4003,fork TCP:0.0.0.0:4001&
 xvfb-daemon-run /opt/IBController/Scripts/DisplayBannerAndLaunch.sh &
 # Tail latest in log dir
 sleep 1
