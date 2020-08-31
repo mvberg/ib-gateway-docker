@@ -3,9 +3,6 @@ export TZ=America/Chicago
 #COPY ./ib/IBController.ini /root/IBController/IBController.ini
 #COPY ./ib/jts.ini /root/Jts/jts.ini
 
-mkdir -p /root/IBController && cp /tmp/ib/IBController.ini /root/IBController/IBController.ini
-mkdir -p /root/jts && cp /tmp/ib/Jts.ini /root/Jts/Jts.ini
-
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata 
 
@@ -22,15 +19,19 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 # Setup IB TWS
 mkdir -p /opt/TWS
 cd /opt/TWS
-wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh
+wget -q https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh
 chmod a+x ibgateway-stable-standalone-linux-x64.sh
 
 # Setup  IBController
 mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
 cd /opt/IBController/
-wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
-unzip ./IBController-QuantConnect-3.2.0.5.zip
-chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
+ln -s scripts Scripts
+#wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
+#unzip ./IBController-QuantConnect-3.2.0.5.zip
+wget https://github.com/IbcAlpha/IBC/releases/download/3.8.4-beta.1/IBCLinux-3.8.4-beta.1.zip
+unzip ./IBCLinux-3.8.4-beta.1.zip
+chmod -R u+x *.sh && chmod -R u+x scripts/*.sh
+find /opt 
 
 cd /
 
@@ -48,6 +49,13 @@ chmod -R u+x runscript.sh \
   && chmod -R 777 /usr/bin/xvfb-daemon-run \
   && chmod 777 /etc/init.d/xvfb \
   && chmod 777 /etc/init.d/vnc
+
+echo "Showing root home contents" ; find /root
+
+mkdir -p /root/IBController && cp /tmp/ib/IBController.ini /root/IBController/IBController.ini
+mkdir -p /root/jts && cp /tmp/ib/jts.ini /root/Jts/jts.ini
+
+#rm -fR /tmp/*
 
 #dos2unix /usr/bin/xvfb-daemon-run \
   #&& dos2unix /etc/init.d/xvfb \

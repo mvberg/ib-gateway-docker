@@ -46,7 +46,7 @@
          {
             "repository" : "forhire/ibgateway",
             "type" : "docker-tag",
-            "tag" : "1.10"
+            "tag" : "1.13-ibc3.8.4-beta"
          }
       ]
    ]
