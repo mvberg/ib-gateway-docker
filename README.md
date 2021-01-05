@@ -7,7 +7,7 @@ IB Gateway running in Docker with [IB Controller](https://github.com/ib-controll
 
 ### Docker Hub image
 
-* https://hub.docker.com/r/mvberg/ib-gateway-docker
+* https://hub.docker.com/r/forhire/ibgateway
 
 ### Getting Started
 
