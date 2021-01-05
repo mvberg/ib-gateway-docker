@@ -1,31 +1,16 @@
 FROM ubuntu:20.04
 
-LABEL maintainer="Mike Ehrenberg <mvberg@gmail.com>"
+LABEL maintainer="forhire"
 
 RUN  apt-get update \
-  && apt-get install -y wget \
-  && apt-get install -y unzip \
-  && apt-get install -y xvfb \
-  && apt-get install -y libxtst6 \
-  && apt-get install -y libxrender1 \
-  && apt-get install -y libxi6 \
-	&& apt-get install -y x11vnc \
-  && apt-get install -y socat \
-  && apt-get install -y software-properties-common \
-  && apt-get install -y dos2unix
+  && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix
 
 # Setup IB TWS
 RUN mkdir -p /opt/TWS
 WORKDIR /opt/TWS
-RUN wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh
-RUN chmod a+x ibgateway-stable-standalone-linux-x64.sh
-
-# Setup  IBController
-RUN mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
+RUN wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh && chmod a+x ibgateway-stable-standalone-linux-x64.sh && mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
 WORKDIR /opt/IBController/
-RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
-RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
-RUN chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
+RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip && unzip ./IBController-QuantConnect-3.2.0.5.zip && chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
 
 WORKDIR /
 
