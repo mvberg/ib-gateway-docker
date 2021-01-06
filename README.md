@@ -9,6 +9,9 @@ IB Gateway running in Docker with [IB Controller](https://github.com/ib-controll
 
 * https://hub.docker.com/r/forhire/ibgateway
 
+### HELM3 chart for deploying to Kubernetes
+* https://github.com/forhire/ibgw
+
 ### Getting Started
 
 ```bash
