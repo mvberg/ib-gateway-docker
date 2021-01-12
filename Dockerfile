@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 LABEL maintainer="forhire"
 
 RUN  apt-get update \
-  && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix
+  && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && apt-get clean && apt-get autoclean
 
 # Setup IB TWS
 RUN mkdir -p /opt/TWS
@@ -28,11 +28,6 @@ RUN chmod -R u+x runscript.sh \
   && chmod -R 777 /usr/bin/xvfb-daemon-run \
   && chmod 777 /etc/init.d/xvfb \
   && chmod 777 /etc/init.d/vnc
-
-RUN dos2unix /usr/bin/xvfb-daemon-run \
-  && dos2unix /etc/init.d/xvfb \
-  && dos2unix /etc/init.d/vnc \
-  && dos2unix runscript.sh
 
 # Below files copied during build to enable operation without volume mount
 COPY ./ib/IBController.ini /root/IBController/IBController.ini
