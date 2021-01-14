@@ -5,17 +5,10 @@ LABEL maintainer="forhire"
 RUN  apt-get update \
   && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && apt-get clean && apt-get autoclean
 
-# Setup IB TWS
-RUN mkdir -p /opt/TWS
-WORKDIR /opt/TWS
-RUN wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh && chmod a+x ibgateway-stable-standalone-linux-x64.sh && mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
-WORKDIR /opt/IBController/
-RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip && unzip ./IBController-QuantConnect-3.2.0.5.zip && chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
+# Setup IB TWS and IBController
+RUN mkdir -p /opt/TWS && cd /opt/TWS && wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh && chmod a+x ibgateway-stable-standalone-linux-x64.sh && mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs && cd / && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && cd /opt/IBController/ && wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip && unzip ./IBController-QuantConnect-3.2.0.5.zip && chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh && rm IBController-QuantConnect-3.2.0.5.zip
 
 WORKDIR /
-
-# Install TWS
-RUN yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh
 
 ENV DISPLAY :0
 
