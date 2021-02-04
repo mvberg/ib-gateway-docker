@@ -6,7 +6,7 @@ RUN  apt-get update \
   && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && apt-get clean && apt-get autoclean
 
 # Setup IB TWS and IBController
-RUN mkdir -p /opt/TWS && cd /opt/TWS && wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh && chmod a+x ibgateway-stable-standalone-linux-x64.sh && mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs && cd / && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && cd /opt/IBController/ && wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip && unzip ./IBController-QuantConnect-3.2.0.5.zip && chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh && rm IBController-QuantConnect-3.2.0.5.zip
+RUN mkdir -p /opt/TWS && cd /opt/TWS && wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh && chmod a+x ibgateway-stable-standalone-linux-x64.sh && mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs && cd / && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh && cd /opt/IBController/ && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.8.4-beta.2/IBCLinux-3.8.4-beta.2.zip && unzip ./IBCLinux-3.8.4-beta.2.zip && chmod -R u+x *.sh && chmod -R u+x scripts/*.sh && rm IBCLinux-3.8.4-beta.2.zip
 
 WORKDIR /
 
@@ -24,6 +24,6 @@ RUN chmod -R u+x runscript.sh \
 
 # Below files copied during build to enable operation without volume mount
 COPY ./ib/IBController.ini /root/IBController/IBController.ini
-COPY ./ib/jts.ini /root/Jts/jts.ini
+#COPY ./ib/jts.ini /root/Jts/jts.ini
 
 CMD bash runscript.sh
