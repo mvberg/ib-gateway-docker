@@ -3,7 +3,7 @@ services:
   tws:
     build: .
     ports:
-      - "4001:4001"
+      - "4003:4003"
       - "5901:5900"
     volumes:
       - ./ib/IBController.ini:/root/IBController/IBController.ini
