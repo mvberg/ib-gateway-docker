@@ -38,6 +38,5 @@ RUN chmod -R u+x runscript.sh \
 
 # Below files copied during build to enable operation without volume mount
 COPY ./ib/IBController.ini /root/IBController/IBController.ini
-#COPY ./ib/jts.ini /root/Jts/jts.ini
 
 CMD bash runscript.sh
