@@ -1,36 +1,28 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
-LABEL maintainer="Mike Ehrenberg <mvberg@gmail.com>"
+LABEL maintainer="forhire"
 
 RUN  apt-get update \
-  && apt-get install -y wget \
-  && apt-get install -y unzip \
-  && apt-get install -y xvfb \
-  && apt-get install -y libxtst6 \
-  && apt-get install -y libxrender1 \
-  && apt-get install -y libxi6 \
-	&& apt-get install -y x11vnc \
-  && apt-get install -y socat \
-  && apt-get install -y software-properties-common \
-  && apt-get install -y dos2unix
+  && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && apt-get clean && apt-get autoclean
 
-# Setup IB TWS
-RUN mkdir -p /opt/TWS
-WORKDIR /opt/TWS
-RUN wget -q http://cdn.quantconnect.com/interactive/ibgateway-latest-standalone-linux-x64-v974.4g.sh
-RUN chmod a+x ibgateway-latest-standalone-linux-x64-v974.4g.sh
-
-# Setup  IBController
-RUN mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
-WORKDIR /opt/IBController/
-RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
-RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
-RUN chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
+# Setup IB TWS and IBController
+RUN mkdir -p /opt/TWS \
+ && cd /opt/TWS \
+ && wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh \
+ && chmod a+x ibgateway-stable-standalone-linux-x64.sh \
+ && mkdir -p /opt/IBController/ \
+ && mkdir -p /opt/IBController/Logs \
+ && cd / \
+ && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
+ && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
+ && cd /opt/IBController/ \
+ && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.8.5/IBCLinux-3.8.5.zip \
+ && unzip ./IBCLinux-3.8.5.zip \
+ && chmod -R u+x *.sh \
+ && chmod -R u+x scripts/*.sh \
+ && rm IBCLinux-3.8.5.zip
 
 WORKDIR /
-
-# Install TWS
-RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v974.4g.sh
 
 ENV DISPLAY :0
 
@@ -44,13 +36,7 @@ RUN chmod -R u+x runscript.sh \
   && chmod 777 /etc/init.d/xvfb \
   && chmod 777 /etc/init.d/vnc
 
-RUN dos2unix /usr/bin/xvfb-daemon-run \
-  && dos2unix /etc/init.d/xvfb \
-  && dos2unix /etc/init.d/vnc \
-  && dos2unix runscript.sh
-
 # Below files copied during build to enable operation without volume mount
 COPY ./ib/IBController.ini /root/IBController/IBController.ini
-COPY ./ib/jts.ini /root/Jts/jts.ini
 
 CMD bash runscript.sh
