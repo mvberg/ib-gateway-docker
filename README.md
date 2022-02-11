@@ -58,14 +58,6 @@ Please do not open your box to the internet.
 
 ![vnc](docs/ib_gateway_vnc.jpg)
 
-### Demo Accounts
-
-It seems that all of the `demo` accounts are dead for good:
-
-* edemo
-* fdemo
-* pmdemo
-
 ### Troubleshooting
 
 Sometimes, when running in non-daemon mode, you will see this:
