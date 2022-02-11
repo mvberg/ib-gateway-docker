@@ -13,7 +13,7 @@ RUN mkdir -p /opt/TWS \
  && mkdir -p /opt/IBController/ \
  && mkdir -p /opt/IBController/Logs \
  && cd / \
- && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
+ && printf "\n\n" | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
  && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
  && cd /opt/IBController/ \
  && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.12.0/IBCLinux-3.12.0.zip \
