@@ -16,11 +16,11 @@ RUN mkdir -p /opt/TWS \
  && printf "\n\n" | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
  && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
  && cd /opt/IBController/ \
- && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.12.0/IBCLinux-3.12.0.zip \
- && unzip ./IBCLinux-3.12.0.zip \
+ && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.14.0/IBCLinux-3.14.0.zip \
+ && unzip ./IBCLinux-3.14.0.zip \
  && chmod -R u+x *.sh \
  && chmod -R u+x scripts/*.sh \
- && rm IBCLinux-3.12.0.zip
+ && rm IBCLinux-3.14.0.zip
 
 WORKDIR /
 
