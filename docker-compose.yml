@@ -12,13 +12,13 @@ services:
       - TZ=America/Chicago
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=981
+      - TWS_MAJOR_VRSN=1012
       - IBC_INI=/root/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
       - TWS_CONFIG_PATH=/root/Jts
       - LOG_PATH=/opt/IBController/Logs
-      - JAVA_PATH=/opt/i4j_jres/1.8.0_152-tzdata2019c/bin # JRE is bundled starting with TWS 952 
+      - JAVA_PATH=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/1.8.0_202/bin/
       - TRADING_MODE=paper # either paper or live
       - TWSUSERID=fdemo # IB account
       - TWSPASSWORD=demouser # IB account password
