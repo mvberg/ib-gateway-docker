@@ -11,7 +11,7 @@ ARG IB_GATEWAY_INSTVER=1021
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 nc && \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat && \
     rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
