@@ -1,19 +1,26 @@
-version: '2'
+version: '3'
 services:
   tws:
+    image: ib-gateway-docker_tws:latest
+    ports:
+      - "7496:4003"
+      - "4001:4003"
+      - "4002:4003"
+      - "4003:4003"
+      - "5902:5900"
     build: .
     ports:
       - "4003:4003"
       - "5901:5900"
     volumes:
-      - ./ib/IBController.ini:/root/IBController/IBController.ini
-      - ./ib/jts.ini:/root/Jts/jts.ini
+      - ib-controller:/opt/IBController
+      - ib-jts:/root/Jts
     environment:
       - TZ=America/Chicago
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=978
-      - IBC_INI=/root/IBController/IBController.ini
+      - TWS_MAJOR_VRSN=1021
+      - IBC_INI=/opt/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
       - TWS_CONFIG_PATH=/root/Jts
@@ -28,4 +35,13 @@ services:
       - SOCAT_LISTEN_PORT=4003
       - SOCAT_DEST_PORT=4002 # paper = 4002, live 4003
       - SOCAT_DEST_ADDR=127.0.0.1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4003/v1/api/iserver/auth/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  ib-controller:
+  ib-jts:
 

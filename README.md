@@ -3,7 +3,7 @@
 IB Gateway running in Docker with [IB Controller](https://github.com/ib-controller/ib-controller/) and VNC
 
 * TWS Gateway: v978.2d
-* IBC: 3.8.4-beta.2
+* IBC: 3.16.0
 
 ### Docker Hub image
 
@@ -57,14 +57,6 @@ Please do not open your box to the internet.
 * localhost:5901
 
 ![vnc](docs/ib_gateway_vnc.jpg)
-
-### Demo Accounts
-
-It seems that all of the `demo` accounts are dead for good:
-
-* edemo
-* fdemo
-* pmdemo
 
 ### Troubleshooting
 

@@ -1,42 +1,82 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+
+# Set timezone to America/Chicago
+ENV TZ=America/Chicago
 
 LABEL maintainer="forhire"
 
-RUN  apt-get update \
-  && apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && apt-get clean && apt-get autoclean
+ARG IB_GATEWAY_VERSION=latest-standalone
+ARG IB_CONTROLLER_VERSION=3.16.0
+ARG IB_GATEWAY_INSTVER=1021
+
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && \
+    rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
-RUN mkdir -p /opt/TWS \
- && cd /opt/TWS \
- && wget https://download2.interactivebrokers.com/installers/ibgateway/stable-standalone/ibgateway-stable-standalone-linux-x64.sh \
- && chmod a+x ibgateway-stable-standalone-linux-x64.sh \
- && mkdir -p /opt/IBController/ \
- && mkdir -p /opt/IBController/Logs \
- && cd / \
- && yes n | /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
- && rm /opt/TWS/ibgateway-stable-standalone-linux-x64.sh \
- && cd /opt/IBController/ \
- && wget -q https://github.com/IbcAlpha/IBC/releases/download/3.8.5/IBCLinux-3.8.5.zip \
- && unzip ./IBCLinux-3.8.5.zip \
- && chmod -R u+x *.sh \
- && chmod -R u+x scripts/*.sh \
- && rm IBCLinux-3.8.5.zip
+RUN mkdir -p /opt/TWS && \
+    cd /opt/TWS && \
+    wget https://download2.interactivebrokers.com/installers/ibgateway/${IB_GATEWAY_VERSION}/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    chmod a+x ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    mkdir -p /opt/IBController/Logs && \
+    cd / && \
+    printf "/root/Jts/ibgateway/${IB_GATEWAY_INSTVER}\n\n" | /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    rm /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    cd /opt/IBController/ && \
+    wget -q https://github.com/IbcAlpha/IBC/releases/download/${IB_CONTROLLER_VERSION}/IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
+    unzip ./IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
+    chmod -R u+x *.sh && \
+    chmod -R u+x scripts/*.sh && \
+    rm IBCLinux-${IB_CONTROLLER_VERSION}.zip
 
 WORKDIR /
 
+# Set display environment variable
 ENV DISPLAY :0
 
-ADD runscript.sh runscript.sh
-ADD ./vnc/xvfb_init /etc/init.d/xvfb
-ADD ./vnc/vnc_init /etc/init.d/vnc
-ADD ./vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
+COPY runscript.sh /
+COPY vnc/xvfb_init /etc/init.d/xvfb
+COPY vnc/vnc_init /etc/init.d/vnc
+COPY vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
 
-RUN chmod -R u+x runscript.sh \
-  && chmod -R 777 /usr/bin/xvfb-daemon-run \
-  && chmod 777 /etc/init.d/xvfb \
-  && chmod 777 /etc/init.d/vnc
+USER root
+
+RUN chmod -R u+x /runscript.sh && \
+    chmod -R 777 /usr/bin/xvfb-daemon-run && \
+    chmod 777 /etc/init.d/xvfb && \
+    chmod 777 /etc/init.d/vnc
+
+#USER nobody
 
 # Below files copied during build to enable operation without volume mount
-COPY ./ib/IBController.ini /root/IBController/IBController.ini
+COPY ib/IBController.ini /opt/IBController/IBController.ini
 
-CMD bash runscript.sh
+# Set environment variables
+ENV VNC_PASSWORD=1234
+ENV TWS_MAJOR_VRSN=${IB_GATEWAY_INSTVER}
+ENV IBC_INI=/opt/IBController/IBController.ini
+ENV IBC_PATH=/opt/IBController
+ENV TWS_PATH=/root/Jts
+ENV TWS_CONFIG_PATH=/root/Jts
+ENV SOCAT_LISTEN_PORT=4003
+ENV SOCAT_DEST_PORT=4002
+ENV SOCAT_DEST_ADDR=127.0.0.1
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl --fail http://localhost:4001 || exit 1
+
+# Expose VNC port
+EXPOSE 5900
+
+# Expose IB Gateway port
+EXPOSE 4001
+
+# Expose IB Gateway API port
+EXPOSE 4002
+
+# Expose IB Gateway API port
+EXPOSE 4003
+
+CMD /bin/bash runscript.sh
+
