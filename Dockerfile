@@ -1,10 +1,15 @@
 FROM ubuntu:22.04
 
+# Set timezone to America/Chicago
+ENV TZ=America/Chicago
+
 LABEL maintainer="forhire"
 
-ARG IB_GATEWAY_VERSION=latest
-ARG IB_CONTROLLER_VERSION=3.8.5
+ARG IB_GATEWAY_VERSION=latest-standalone
+ARG IB_CONTROLLER_VERSION=3.16.0
+ARG IB_GATEWAY_INSTVER=1021
 
+# Install necessary packages
 RUN apt-get update && \
     apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && \
     rm -rf /var/lib/apt/lists/*
@@ -16,7 +21,7 @@ RUN mkdir -p /opt/TWS && \
     chmod a+x ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     mkdir -p /opt/IBController/Logs && \
     cd / && \
-    yes n | /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    printf "/root/Jts/ibgateway/${IB_GATEWAY_INSTVER}\n\n" | /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     rm /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     cd /opt/IBController/ && \
     wget -q https://github.com/IbcAlpha/IBC/releases/download/${IB_CONTROLLER_VERSION}/IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
@@ -27,6 +32,7 @@ RUN mkdir -p /opt/TWS && \
 
 WORKDIR /
 
+# Set display environment variable
 ENV DISPLAY :0
 
 COPY runscript.sh /
@@ -41,11 +47,36 @@ RUN chmod -R u+x /runscript.sh && \
     chmod 777 /etc/init.d/xvfb && \
     chmod 777 /etc/init.d/vnc
 
-USER nobody
+#USER nobody
 
 # Below files copied during build to enable operation without volume mount
-COPY ib/IBController.ini /root/IBController/IBController.ini
+COPY ib/IBController.ini /opt/IBController/IBController.ini
+
+# Set environment variables
+ENV VNC_PASSWORD=1234
+ENV TWS_MAJOR_VRSN=${IB_GATEWAY_INSTVER}
+ENV IBC_INI=/opt/IBController/IBController.ini
+ENV IBC_PATH=/opt/IBController
+ENV TWS_PATH=/root/Jts
+ENV TWS_CONFIG_PATH=/root/Jts
+ENV SOCAT_LISTEN_PORT=4003
+ENV SOCAT_DEST_PORT=4002
+ENV SOCAT_DEST_ADDR=127.0.0.1
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD curl --fail http://localhost:4001 ||
+  CMD curl --fail http://localhost:4001 || exit 1
+
+# Expose VNC port
+EXPOSE 5900
+
+# Expose IB Gateway port
+EXPOSE 4001
+
+# Expose IB Gateway API port
+EXPOSE 4002
+
+# Expose IB Gateway API port
+EXPOSE 4003
+
+CMD /bin/bash runscript.sh
 

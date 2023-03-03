@@ -1,6 +1,13 @@
 version: '3'
 services:
   tws:
+    image: ib-gateway-docker_tws:latest
+    ports:
+      - "7496:4003"
+      - "4001:4003"
+      - "4002:4003"
+      - "4003:4003"
+      - "5902:5900"
     build: .
     ports:
       - "4003:4003"
@@ -12,7 +19,7 @@ services:
       - TZ=America/Chicago
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=978
+      - TWS_MAJOR_VRSN=1021
       - IBC_INI=/opt/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
