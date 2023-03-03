@@ -49,9 +49,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and push Docker image
+        id: push-image
         run: |
           IMAGE_TAG=$(echo "${{ github.ref }}" | sed 's#.*/##; s/^v//; s/master/latest/')
 
           docker tag ${{ env.IMAGE_NAME }} "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
           docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
+
+          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
+          echo "::set-output name=image-tag::$IMAGE_TAG"
 
