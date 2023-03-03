@@ -11,7 +11,7 @@ ARG IB_GATEWAY_INSTVER=1021
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 && \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 nc && \
     rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
@@ -64,7 +64,7 @@ ENV SOCAT_DEST_PORT=4002
 ENV SOCAT_DEST_ADDR=127.0.0.1
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD curl --fail http://localhost:4001 || exit 1
+  CMD nc -z localhost:4001 || exit 1
 
 # Expose VNC port
 EXPOSE 5900
