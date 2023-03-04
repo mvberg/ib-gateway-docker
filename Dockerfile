@@ -5,9 +5,9 @@ ENV TZ=America/Chicago
 
 LABEL maintainer="forhire"
 
-ARG IB_GATEWAY_VERSION=latest-standalone
+ARG IB_GATEWAY_VERSION=stable-standalone
 ARG IB_CONTROLLER_VERSION=3.16.0
-ARG IB_GATEWAY_INSTVER=1021
+ARG IB_GATEWAY_INSTVER=stable-standalone
 
 # Install necessary packages
 RUN apt-get update && \
@@ -43,9 +43,9 @@ COPY vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
 USER root
 
 RUN chmod -R u+x /runscript.sh && \
-    chmod -R 777 /usr/bin/xvfb-daemon-run && \
-    chmod 777 /etc/init.d/xvfb && \
-    chmod 777 /etc/init.d/vnc
+    chmod -R 755 /usr/bin/xvfb-daemon-run && \
+    chmod 755 /etc/init.d/xvfb && \
+    chmod 755 /etc/init.d/vnc
 
 #USER nobody
 
@@ -59,24 +59,21 @@ ENV IBC_INI=/opt/IBController/IBController.ini
 ENV IBC_PATH=/opt/IBController
 ENV TWS_PATH=/root/Jts
 ENV TWS_CONFIG_PATH=/root/Jts
-ENV SOCAT_LISTEN_PORT=4003
-ENV SOCAT_DEST_PORT=4002
+ENV SOCAT_LISTEN_PORT=5003
+ENV SOCAT_DEST_PORT=4003
 ENV SOCAT_DEST_ADDR=127.0.0.1
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD nc -z localhost:4001 || exit 1
+  CMD nc -z localhost 4003 || exit 1
 
 # Expose VNC port
-EXPOSE 5900
-
-# Expose IB Gateway port
-EXPOSE 4001
-
-# Expose IB Gateway API port
-EXPOSE 4002
+EXPOSE 5902:5900
 
 # Expose IB Gateway API port
 EXPOSE 4003
+
+# Expose IB Gateway API port
+EXPOSE 5003
 
 CMD /bin/bash runscript.sh
 

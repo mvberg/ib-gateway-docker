@@ -11,7 +11,7 @@ services:
     build: .
     ports:
       - "4003:4003"
-      - "5901:5900"
+      - "5902:5900"
     volumes:
       - ib-controller:/opt/IBController
       - ib-jts:/root/Jts
