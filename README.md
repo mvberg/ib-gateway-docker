@@ -5,9 +5,9 @@ IB Gateway running in Docker with [IB Controller](https://github.com/ib-controll
 * TWS Gateway: 1021
 * IBC: 3.16.0
 
-### Docker Hub image
+### Docker container image
 
-* https://hub.docker.com/r/forhire/ibgateway
+* ghcr.io/forhire/ib-gateway-docker/ib-gateway-docker:VERSIONTAG
 
 ### HELM3 chart for deploying to Kubernetes
 * https://github.com/forhire/ibgw

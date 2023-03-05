@@ -3,14 +3,14 @@ services:
   tws:
     image: ib-gateway-docker_tws:latest
     ports:
-      - "7496:4003"
-      - "4001:4003"
-      - "4002:4003"
-      - "4003:4003"
+      - "7496:5003"
+      - "4001:5003"
+      - "4002:5003"
+      - "4003:5003"
       - "5902:5900"
     build: .
     ports:
-      - "4003:4003"
+      - "4003:5003"
       - "5902:5900"
     volumes:
       - ib-controller:/opt/IBController
@@ -32,11 +32,11 @@ services:
       - FIXUSERID=
       - FIXPASSWORD=
       - APP=GATEWAY
-      - SOCAT_LISTEN_PORT=4003
-      - SOCAT_DEST_PORT=4002 # paper = 4002, live 4003
+      - SOCAT_LISTEN_PORT=5003
+      - SOCAT_DEST_PORT=4003 # paper = 4002, live 4003
       - SOCAT_DEST_ADDR=127.0.0.1
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4003/v1/api/iserver/auth/status"]
+      test: ["CMD", "nc", "-z", "localhost 5003"]
       interval: 10s
       timeout: 5s
       retries: 3
