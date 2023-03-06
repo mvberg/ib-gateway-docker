@@ -27,7 +27,8 @@ jobs:
 
       - name: Set up semantic versioning
         id: semver
-        uses: paulhatch/semantic-version@v1
+        uses: paulhatch/semantic-version@v5.0.3
+
         with:
           bump: patch
           version: ${{ steps.version.outputs.version }}
