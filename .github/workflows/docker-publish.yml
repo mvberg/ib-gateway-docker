@@ -50,3 +50,4 @@ jobs:
           echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
           echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
 
+
