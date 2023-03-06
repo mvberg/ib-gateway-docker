@@ -21,8 +21,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get version from tag
+        id: version
+        run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/})"
+
+      - name: Set up semantic versioning
+        id: semver
+        uses: paulhatch/semantic-version@v1
+        with:
+          bump: patch
+          version: ${{ steps.version.outputs.version }}
+
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}
 
       - name: Login to GitHub Packages
         uses: docker/login-action@v1
@@ -34,11 +45,8 @@ jobs:
       - name: Tag and push Docker image
         id: push-image
         run: |
-          IMAGE_TAG=$(echo "${{ github.ref }}" | sed 's#.*/##; s/^v//; s/master/latest/')
+          docker push "${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }" "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
 
-          docker tag ${{ env.IMAGE_NAME }} "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
-          docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
-
-          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
-          echo "::set-output name=image-tag::$IMAGE_TAG"
+          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+          echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
 
