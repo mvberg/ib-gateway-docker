@@ -45,7 +45,7 @@ jobs:
       - name: Tag and push Docker image
         id: push-image
         run: |
-          docker push "${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}" "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+          docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
 
           echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
           echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
