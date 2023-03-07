@@ -6,16 +6,18 @@ on:
       - master
     tags:
       - v*
-
   pull_request:
+    types: [closed]
+    branches:
+      - master
 
 env:
   IMAGE_NAME: ib-gateway-docker
 
 jobs:
-  push:
+  build-and-push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged)
 
     steps:
       - name: Checkout code
@@ -50,5 +52,4 @@ jobs:
 
           echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
           echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
-
 
