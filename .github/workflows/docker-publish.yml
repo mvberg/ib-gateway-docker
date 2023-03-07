@@ -22,16 +22,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get version from tag
-        id: version
-        run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/})"
+        run: echo "{name}=::$(echo ${GITHUB_REF#refs/tags/})::" >> $GITHUB_STATE
 
       - name: Set up semantic versioning
-        id: semver
         uses: paulhatch/semantic-version@v5.0.3
-
         with:
           bump: patch
-          version: ${{ steps.version.outputs.version }}
+          version: ${{ env.VERSION }}
+        id: semver
 
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
@@ -44,11 +42,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and push Docker image
+        continue-on-error: true
         id: push-image
         run: |
           docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
 
-          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
-          echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
-
+          echo "{name}=${{ steps.semver.outputs.version }}" >> $GITHUB_OUTPUT
 
