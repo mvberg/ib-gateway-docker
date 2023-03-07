@@ -6,30 +6,34 @@ on:
       - master
     tags:
       - v*
-
   pull_request:
+    types: [closed]
+    branches:
+      - master
 
 env:
   IMAGE_NAME: ib-gateway-docker
 
 jobs:
-  push:
+  build-and-push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Get version from tag
-        run: echo "{name}=::$(echo ${GITHUB_REF#refs/tags/})::" >> $GITHUB_STATE
+        id: version
+        run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/})"
 
       - name: Set up semantic versioning
+        id: semver
         uses: paulhatch/semantic-version@v5.0.3
+
         with:
           bump: patch
-          version: ${{ env.VERSION }}
-        id: semver
+          version: ${{ steps.version.outputs.version }}
 
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
@@ -42,11 +46,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and push Docker image
-        continue-on-error: true
         id: push-image
         run: |
           docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
 
-          echo "{name}=${{ steps.semver.outputs.version }}" >> $GITHUB_OUTPUT
+          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+          echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
 
-        
