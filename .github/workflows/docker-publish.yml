@@ -7,7 +7,7 @@ on:
 
 env:
   DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_REPOSITORY: your-username/ib-gateway-docker
+  DOCKER_REPOSITORY: forhire/ib-gateway-docker
   IMAGE_NAME: ib-gateway-docker
 
 jobs:
