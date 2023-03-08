@@ -1,43 +1,54 @@
-name: Create and publish a Docker image for the API component
+name: Docker
 
 on:
   push:
+    branches:
+      - master
     tags:
-      - "v*"
+      - v*
+
+  pull_request:
 
 env:
-  DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_REPOSITORY: forhire/ib-gateway-docker
   IMAGE_NAME: ib-gateway-docker
 
 jobs:
-  build-and-push-image:
+  push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    if: github.event_name == 'push'
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Log in to the docker registry
+      - name: Get version from tag
+        id: version
+        run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/})"
+
+      - name: Set up semantic versioning
+        id: semver
+        uses: paulhatch/semantic-version@v5.0.3
+
+        with:
+          bump: patch
+          version: ${{ steps.version.outputs.version }}
+
+      - name: Build Docker image
+        run: docker build . --file Dockerfile --tag "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+
+      - name: Login to GitHub Packages
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.DOCKER_REGISTRY }}
+          registry: docker.pkg.github.com
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: api_meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ env.IMAGE_NAME }}
+      - name: Tag and push Docker image
+        id: push-image
+        run: |
+          docker push "docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
 
-      - name: Build and push api Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ib-gateway-docker
-          push: true
-          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.api_meta.outputs.tags }}
-          labels: ${{ steps.api_meta.outputs.labels }}
+          echo "::set-output name=image-url::docker.pkg.github.com/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+          echo "::set-output name=image-tag::${{ steps.semver.outputs.version }}"
+
 
