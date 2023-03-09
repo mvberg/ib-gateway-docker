@@ -2,6 +2,7 @@ FROM ubuntu:22.04
 
 # Set timezone to America/Chicago
 ENV TZ=America/Chicago
+ARG DEBIAN_FRONTEND=noninteractive
 
 LABEL maintainer="forhire"
 
@@ -11,8 +12,8 @@ ARG IB_GATEWAY_INSTVER=stable-standalone
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat python3-pip && pip install ibapi && apt-get remove -y --autoremove python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
 RUN mkdir -p /opt/TWS && \
@@ -36,6 +37,7 @@ WORKDIR /
 ENV DISPLAY :0
 
 COPY runscript.sh /
+COPY healthcheck.py /
 COPY vnc/xvfb_init /etc/init.d/xvfb
 COPY vnc/vnc_init /etc/init.d/vnc
 COPY vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
