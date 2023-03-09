@@ -1,11 +1,21 @@
 FROM ubuntu:22.04
 
-# Set timezone to America/Chicago
+# Set defaults for environment variables
 ENV TZ=America/Chicago
-ARG DEBIAN_FRONTEND=noninteractive
+ENV VNC_PASSWORD=1234
+ENV TWS_MAJOR_VRSN=${IB_GATEWAY_INSTVER}
+ENV IBC_INI=/opt/IBController/IBController.ini
+ENV IBC_PATH=/opt/IBController
+ENV TWS_PATH=/root/Jts
+ENV TWS_CONFIG_PATH=/root/Jts
+ENV SOCAT_LISTEN_PORT=5003
+ENV SOCAT_DEST_PORT=4003
+ENV SOCAT_DEST_ADDR=127.0.0.1
+ENV HEALTHCHECK_CLIENTID=990
 
 LABEL maintainer="forhire"
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG IB_GATEWAY_VERSION=stable-standalone
 ARG IB_CONTROLLER_VERSION=3.16.0
 ARG IB_GATEWAY_INSTVER=stable-standalone
@@ -54,28 +64,18 @@ RUN chmod -R u+x /runscript.sh && \
 # Below files copied during build to enable operation without volume mount
 COPY ib/IBController.ini /opt/IBController/IBController.ini
 
-# Set environment variables
-ENV VNC_PASSWORD=1234
-ENV TWS_MAJOR_VRSN=${IB_GATEWAY_INSTVER}
-ENV IBC_INI=/opt/IBController/IBController.ini
-ENV IBC_PATH=/opt/IBController
-ENV TWS_PATH=/root/Jts
-ENV TWS_CONFIG_PATH=/root/Jts
-ENV SOCAT_LISTEN_PORT=5003
-ENV SOCAT_DEST_PORT=4003
-ENV SOCAT_DEST_ADDR=127.0.0.1
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD /healthcheck.py -a localhost -p 4003 -c 990 -r 1 || exit 1
+  CMD /healthcheck.py -a localhost -p ${SOCAT_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1 || exit 1
 
 # Expose VNC port
-EXPOSE 5902:5900
+EXPOSE 5900
 
 # Expose IB Gateway API port
 EXPOSE 4003
 
-# Expose IB Gateway API port
-EXPOSE 5003
+# Expose API port
+EXPOSE ${SOCAT_LISTEN_PORT}
 
 CMD /bin/bash runscript.sh
 

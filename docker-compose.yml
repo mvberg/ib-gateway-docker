@@ -19,7 +19,7 @@ services:
       - TZ=America/Chicago
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=1021
+      - TWS_MAJOR_VRSN=stable-standalone
       - IBC_INI=/opt/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
@@ -35,11 +35,6 @@ services:
       - SOCAT_LISTEN_PORT=5003
       - SOCAT_DEST_PORT=4003 # paper = 4002, live 4003
       - SOCAT_DEST_ADDR=127.0.0.1
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost 5003"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
 volumes:
   ib-controller:
