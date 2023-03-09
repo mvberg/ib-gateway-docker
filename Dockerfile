@@ -66,7 +66,7 @@ ENV SOCAT_DEST_PORT=4003
 ENV SOCAT_DEST_ADDR=127.0.0.1
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD nc -z localhost 4003 || exit 1
+  CMD /healthcheck.py -a localhost -p 4003 -c 990 -r 1 || exit 1
 
 # Expose VNC port
 EXPOSE 5902:5900
