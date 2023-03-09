@@ -60,6 +60,7 @@ for i in range(args.retries):
 
     if app.is_connected:
         print('IB API is connected and ready for use.')
+        app.disconnect()
         sys.exit(0)
 
 print(f'Failed to connect to IB API after {args.retries} attempts.')
