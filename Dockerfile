@@ -72,7 +72,7 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
 EXPOSE 5900
 
 # Expose IB Gateway API port
-EXPOSE 4003
+EXPOSE ${SOCAT_DEST_PORT}
 
 # Expose API port
 EXPOSE ${SOCAT_LISTEN_PORT}
