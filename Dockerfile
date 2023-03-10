@@ -12,6 +12,8 @@ ENV SOCAT_LISTEN_PORT=5003
 ENV SOCAT_DEST_PORT=4003
 ENV SOCAT_DEST_ADDR=127.0.0.1
 ENV HEALTHCHECK_CLIENTID=990
+ENV HEALTHCHECK_LISTEN_PORT=4002
+ENV HEALTHCHECK_IP=127.0.0.1
 
 LABEL maintainer="forhire"
 
@@ -66,7 +68,7 @@ COPY ib/IBController.ini /opt/IBController/IBController.ini
 
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD /healthcheck.py -a localhost -p ${SOCAT_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1 || exit 1
+  CMD /healthcheck.py -a ${HEALTHCHECK_IP} -p ${HEALTHCHECK_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1 || exit 1
 
 # Expose VNC port
 EXPOSE 5900
