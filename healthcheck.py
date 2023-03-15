@@ -11,13 +11,14 @@ import argparse
 class IBapi(EWrapper, EClient):
     def __init__(self):
         EClient.__init__(self, self)
-        self.reqId = 0
         self.is_connected = False
+        self.next_order_id_received = threading.Event()
 
     def nextValidId(self, orderId):
         super().nextValidId(orderId)
         self.nextorderId = orderId
         print('Next Valid Id:', self.nextorderId)
+        self.next_order_id_received.set()
 
     def error(self, reqId, errorCode, errorString):
         print('Error:', reqId, errorCode, errorString)
@@ -54,12 +55,20 @@ for i in range(args.retries):
     print(f'Attempting to connect to IB API. Attempt {i+1} of {args.retries}...')
     app.connect(args.address, args.port, args.client_id)
 
+    # Start the run loop in a separate thread
+    api_thread = threading.Thread(target=run_loop)
+    api_thread.start()
+
     # Wait for the connection to be established
-    if not app.is_connected:
-        time.sleep(1)
+    time.sleep(2)
 
     if app.is_connected:
         print('IB API is connected and ready for use.')
+        app.reqIds(-1)  # Request the next order ID
+
+        # Wait for nextValidId() callback
+        app.next_order_id_received.wait()
+
         app.disconnect()
         sys.exit(0)
 
