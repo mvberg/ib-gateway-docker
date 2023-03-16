@@ -23,6 +23,7 @@ ARG IB_GATEWAY_VERSION=stable-standalone
 ARG IB_CONTROLLER_VERSION=3.16.0
 ARG IB_GATEWAY_INSTVER=stable-standalone
 
+
 # Install necessary packages
 RUN apt-get update && \
     apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat python3-pip \
