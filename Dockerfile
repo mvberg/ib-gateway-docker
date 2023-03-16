@@ -14,6 +14,7 @@ ENV SOCAT_DEST_ADDR=127.0.0.1
 ENV HEALTHCHECK_CLIENTID=990
 ENV HEALTHCHECK_LISTEN_PORT=4002
 ENV HEALTHCHECK_IP=127.0.0.1
+ENV IBAPI_VERSION=1019.01
 
 LABEL maintainer="forhire"
 
@@ -22,26 +23,37 @@ ARG IB_GATEWAY_VERSION=stable-standalone
 ARG IB_CONTROLLER_VERSION=3.16.0
 ARG IB_GATEWAY_INSTVER=stable-standalone
 
+
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat python3-pip && pip install ibapi && apt-get remove -y --autoremove python3-pip \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
-RUN mkdir -p /opt/TWS && \
+RUN set -x && \
+    mkdir -p /opt/TWS && \
     cd /opt/TWS && \
     wget https://download2.interactivebrokers.com/installers/ibgateway/${IB_GATEWAY_VERSION}/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     chmod a+x ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    mkdir -p /opt/TWS/twsapi && \
+    cd /opt/TWS/twsapi && \
+    wget https://interactivebrokers.github.io/downloads/twsapi_macunix.${IBAPI_VERSION}.zip && \
+    unzip twsapi_macunix.${IBAPI_VERSION}.zip && \
+    cd IBJts/source/pythonclient && \
+    python3 -m pip install wheel && \
+    python3 setup.py bdist_wheel && \
+    WHLFILE=`find . -name '*.whl' -type f` && \
+    python3 -m pip install --user --upgrade ${WHLFILE} && \
+    cd /opt/TWS && \
+    rm twsapi/twsapi_macunix.${IBAPI_VERSION}.zip && \
+    printf "/root/Jts/ibgateway/${IB_GATEWAY_INSTVER}\n\n" | ./ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
+    rm ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     mkdir -p /opt/IBController/Logs && \
-    cd / && \
-    printf "/root/Jts/ibgateway/${IB_GATEWAY_INSTVER}\n\n" | /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
-    rm /opt/TWS/ibgateway-${IB_GATEWAY_VERSION}-linux-x64.sh && \
     cd /opt/IBController/ && \
     wget -q https://github.com/IbcAlpha/IBC/releases/download/${IB_CONTROLLER_VERSION}/IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
-    unzip ./IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
-    chmod -R u+x *.sh && \
-    chmod -R u+x scripts/*.sh && \
-    rm IBCLinux-${IB_CONTROLLER_VERSION}.zip
+    unzip IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
+    rm IBCLinux-${IB_CONTROLLER_VERSION}.zip && \
+    chmod -R u+x ./*.sh ./scripts/*.sh
 
 WORKDIR /
 

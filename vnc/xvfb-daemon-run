@@ -1,18 +1,30 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cleanup() {
+    if [ "$VNC_PASSWORD" ]; then
+        /etc/init.d/vnc stop
+    fi
+    /etc/init.d/xvfb stop
+}
+
+trap cleanup EXIT
+
+# Start Xvfb
 /etc/init.d/xvfb start
 sleep 1
 
-# start VNC if password exists
+# Start VNC if password exists
 if [ "$VNC_PASSWORD" ]; then
-  mkdir /.vnc
-  x11vnc -storepasswd "$VNC_PASSWORD" /.vnc/passwd > /dev/null
-  /etc/init.d/vnc start
+    mkdir -p "/.vnc"
+    x11vnc -storepasswd "${VNC_PASSWORD}" "/.vnc/passwd"
+    /etc/init.d/vnc start
 fi
 
-$@
+# Run the command
+"$@"
 exit_value=$?
 
-[ "$VNC_PASSWORD" ] && /etc/init.d/vnc stop
-/etc/init.d/xvfb stop
-
 exit $exit_value
+
