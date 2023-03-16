@@ -6,6 +6,19 @@ import threading
 import time
 import sys
 import argparse
+from ibapi.wrapper import TickerId
+
+import subprocess
+import os
+import signal
+
+# Search for other instances of healthcheck.py
+pids = subprocess.check_output(["pgrep", "-f", "healthcheck.py"]).split()
+if len(pids) > 1:
+    print("Found {} other instances of healthcheck.py. Killing them...".format(len(pids) - 1))
+    for pid in pids:
+        if int(pid) != os.getpid():
+            os.kill(int(pid), signal.SIGTERM)
 
 
 class IBapi(EWrapper, EClient):
@@ -20,7 +33,7 @@ class IBapi(EWrapper, EClient):
         print('Next Valid Id:', self.nextorderId)
         self.next_order_id_received.set()
 
-    def error(self, reqId, errorCode, errorString):
+    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print('Error:', reqId, errorCode, errorString)
         if reqId == -1 and errorCode == 1100:
             print('Connection rejected. Please check that the API settings are correct.')
