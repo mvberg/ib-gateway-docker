@@ -26,7 +26,7 @@ ARG IB_GATEWAY_INSTVER=stable-standalone
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common iproute2 ncat python3-pip \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 xinit x11vnc socat software-properties-common iproute2 ncat python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
