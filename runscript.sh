@@ -11,7 +11,7 @@ echo "${VNC_PASSWORD}" | vncpasswd -f > ~/.vnc/passwd
 chmod 600 ~/.vnc/passwd
 
 # Check if /tmp/.X0-lock file exists and remove it if it does
-if [ -f "/tmp/.X0-lock" ]; then
+if [ -f "/tmp/.X0-lock" ] && ! pgrep -x "Xtightvnc" > /dev/null; then
   echo Found /tmp/.X0-lock, removing ...
   rm /tmp/.X0-lock
 fi
