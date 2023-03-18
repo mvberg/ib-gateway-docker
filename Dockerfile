@@ -86,7 +86,6 @@ RUN chmod -R u+x /runscript.sh && \
 # Below files copied during build to enable operation without volume mount
 COPY ib/IBController.ini /opt/IBController/IBController.ini
 
-
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
   CMD /healthcheck.py -a ${HEALTHCHECK_IP} -p ${HEALTHCHECK_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1
 
