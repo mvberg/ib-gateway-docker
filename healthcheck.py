@@ -13,12 +13,13 @@ import os
 import signal
 
 # Search for other instances of healthcheck.py
-pids = subprocess.check_output(["pgrep", "-f", "healthcheck.py"]).split()
-if len(pids) > 1:
-    print("Found {} other instances of healthcheck.py. Killing them...".format(len(pids) - 1))
-    for pid in pids:
-        if int(pid) != os.getpid():
-            os.kill(int(pid), signal.SIGTERM)
+#pids = subprocess.check_output(["pgrep", "-f", "healthcheck.py"]).split()
+#if len(pids) > 1:
+    #print("Found {} other instances of healthcheck.py. exiting ...".format(len(pids) - 1))
+    #for pid in pids:
+        #if int(pid) != os.getpid():
+            #sys.exit(2)
+            #os.kill(int(pid), signal.SIGTERM)
 
 
 class IBapi(EWrapper, EClient):

@@ -15,6 +15,7 @@ ENV HEALTHCHECK_CLIENTID=990
 ENV HEALTHCHECK_LISTEN_PORT=4002
 ENV HEALTHCHECK_IP=127.0.0.1
 ENV IBAPI_VERSION=1019.01
+ENV USER=root
 
 LABEL maintainer="forhire"
 
@@ -25,8 +26,15 @@ ARG IB_GATEWAY_INSTVER=stable-standalone
 
 
 # Install necessary packages
-RUN apt-get update && \
-    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 xinit x11vnc socat software-properties-common iproute2 ncat python3-pip \
+RUN set -x && apt-get update && \
+    apt-get install -y wget unzip xvfb libxtst6 libxrender1 libxi6 xinit \
+    x11vnc tightvncserver socat software-properties-common iproute2 ncat python3-pip \
+    xfonts-base \
+    xfonts-100dpi \
+    xfonts-75dpi \
+    xfonts-scalable \
+    xfonts-cyrillic \
+    xinit \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup IB TWS and IBController
@@ -80,7 +88,7 @@ COPY ib/IBController.ini /opt/IBController/IBController.ini
 
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD /healthcheck.py -a ${HEALTHCHECK_IP} -p ${HEALTHCHECK_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1 || exit 1
+  CMD /healthcheck.py -a ${HEALTHCHECK_IP} -p ${HEALTHCHECK_LISTEN_PORT} -c ${HEALTHCHECK_CLIENTID} -r 1
 
 # Expose VNC port
 EXPOSE 5900
@@ -92,4 +100,3 @@ EXPOSE ${SOCAT_DEST_PORT}
 EXPOSE ${SOCAT_LISTEN_PORT}
 
 CMD /bin/bash runscript.sh
-
