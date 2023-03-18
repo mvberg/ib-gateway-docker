@@ -10,6 +10,11 @@ mkdir -p ~/.vnc
 echo "${VNC_PASSWORD}" | vncpasswd -f > ~/.vnc/passwd
 chmod 600 ~/.vnc/passwd
 
+# Check if /tmp/.X0-lock file exists and remove it if it does
+if [ -f "/tmp/.X0-lock" ]; then
+  echo Found /tmp/.X0-lock, removing ...
+  rm /tmp/.X0-lock
+fi
 
 # Set VNC resolution
 echo "geometry=${RESOLUTION}" > ~/.vnc/config
@@ -43,5 +48,5 @@ fi
 /opt/IBController/scripts/displaybannerandlaunch.sh 
 
 ps -ef | cat
-cat /Logs/ibc*.txt /opt/IBController/Logs/ibc*.txt
+cat ${LOG_PATH}/*
 
