@@ -10,10 +10,18 @@ mkdir -p ~/.vnc
 echo "${VNC_PASSWORD}" | vncpasswd -f > ~/.vnc/passwd
 chmod 600 ~/.vnc/passwd
 
-# Check if /tmp/.X0-lock file exists and remove it if it does
-if [ -f "/tmp/.X0-lock" ] && ! pgrep -x "Xtightvnc" > /dev/null; then
-  echo Found /tmp/.X0-lock, removing ...
-  rm /tmp/.X0-lock
+if ! pgrep -x "Xtightvnc" > /dev/null; then
+  # Check if /tmp/.X0-lock file exists and remove it if it does
+  if [ -e "/tmp/.X0-lock" ]; then
+    echo "Found /tmp/.X0-lock, removing ..."
+    rm /tmp/.X0-lock
+  fi
+
+  # Check if /tmp/.X11-unix/X0 file exists and remove it if it does
+  if [ -e "/tmp/.X11-unix/X0" ]; then
+    echo "Found /tmp/.X11-unix/X0, removing ..."
+    rm /tmp/.X11-unix/X0
+  fi
 fi
 
 # Set VNC resolution
