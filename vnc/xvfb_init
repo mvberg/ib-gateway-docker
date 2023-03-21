@@ -6,12 +6,12 @@ PIDFILE=/var/xvfb_${DISPLAY:1}.pid
 case "$1" in
   start)
     echo -n "Starting virtual X frame buffer: Xvfb"
-    /sbin/start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
+    /sbin/start-stop-daemon --start --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
     echo "."
     ;;
   stop)
     echo -n "Stopping virtual X frame buffer: Xvfb"
-    /sbin/start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    /sbin/start-stop-daemon --stop --pidfile $PIDFILE
     echo "."
     ;;
   restart)
