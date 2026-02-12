@@ -1,0 +1,55 @@
+{
+   "post-processors" : [
+      [
+         {
+            "tag" : "1.13-ibc3.8.4-beta",
+            "type" : "docker-tag",
+            "repository" : "forhire/ibgateway"
+         },
+         {
+            "type" : "docker-push"
+         }
+      ]
+   ],
+   "builders" : [
+      {
+         "commit" : "true",
+         "type" : "docker",
+         "image" : "ubuntu:20.04",
+         "changes" : [
+            "ENTRYPOINT [\"/runscript.sh\"]"
+         ]
+      }
+   ],
+   "provisioners" : [
+      {
+         "source" : "runscript.sh",
+         "destination" : "/runscript.sh",
+         "type" : "file"
+      },
+      {
+         "destination" : "/etc/init.d/xvfb",
+         "type" : "file",
+         "source" : "./vnc/xvfb_init"
+      },
+      {
+         "destination" : "/etc/init.d/vnc",
+         "type" : "file",
+         "source" : "./vnc/vnc_init"
+      },
+      {
+         "destination" : "/usr/bin/xvfb-daemon-run",
+         "type" : "file",
+         "source" : "./vnc/xvfb-daemon-run"
+      },
+      {
+         "type" : "file",
+         "destination" : "/tmp/",
+         "source" : "./ib"
+      },
+      {
+         "script" : "packer-install.sh",
+         "type" : "shell"
+      }
+   ]
+}

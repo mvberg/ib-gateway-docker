@@ -1,13 +1,16 @@
 # Interactive Brokers Gateway Docker
 
-IB Gateway running in Docker with [IB Controller](https://github.com/ib-controller/ib-controller/) and VNC
+IB Gateway running in Docker with [IBC](https://github.com/IbcAlpha/IBC/) and VNC
 
-* TWS Gateway: v974.4g
-* IB Controller: v3.2.0
+* TWS Gateway: 10.30.01
+* IBC: 3.22.0
 
-### Docker Hub image
+### Docker container image
 
-* https://hub.docker.com/r/mvberg/ib-gateway-docker
+* ghcr.io/forhire/ib-gateway-docker/ib-gateway-docker:VERSIONTAG
+
+### HELM3 chart for deploying to Kubernetes
+* https://github.com/forhire/ibgw
 
 ### Getting Started
 
@@ -55,14 +58,6 @@ Please do not open your box to the internet.
 
 ![vnc](docs/ib_gateway_vnc.jpg)
 
-### Demo Accounts
-
-It seems that all of the `demo` accounts are dead for good:
-
-* edemo
-* fdemo
-* pmdemo
-
 ### Troubleshooting
 
 Sometimes, when running in non-daemon mode, you will see this:
@@ -72,3 +67,7 @@ Exception in thread "main" java.awt.AWTError: Can't connect to X11 window server
 ```
 
 You will have to remove the container `docker rm container_id` and run `docker-compose up` again.
+
+### Related Projects
+
+* [gnzsnz/ib-gateway-docker](https://github.com/gnzsnz/ib-gateway-docker) - A similar IB Gateway Docker project

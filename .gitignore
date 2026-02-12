@@ -14,3 +14,9 @@ Logs/*
 node_modules/
 
 *.local
+
+# Environment files with credentials - NEVER commit these
+.env
+.env-*
+.env.*
+!.env.example
